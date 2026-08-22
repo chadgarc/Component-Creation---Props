@@ -3,7 +3,6 @@ import './App.css'
 import { UserProfileCard } from './components/UserProfileCard/UserProfileCard';
 import type { User } from './types';
 import { Modal } from './components/Modal/Modal';
-import { AlertBox } from './components/AlertBox/AlertBox';
 import { ProductDisplay } from './components/ProductDisplay/ProductDisplay';
 
 /**

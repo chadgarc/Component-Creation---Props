@@ -35,10 +35,14 @@ export const ProductDisplay: React.FC<ProductDisplayProps> = ({
                         <h2 className="font-extrabold text-black!">{product.name}</h2>
                         <h3 className="text-blue-600">{product.price}</h3>
                         {showDescription && <p>{product.description}</p>}
+                        {/* Optional stock status, only shown when showStockStatus is true.
+                            Uses product.inStock to decide which label to show. */}
                         {showStockStatus && (product.inStock ? <p className="text-green-600">{"In Stock"}</p> : <p className="text-red-600">{"Out Of Stock"}</p>)}
                     </div>
                     <div className="mt-6">
                         <button className="btn btn-primary btn-block"
+                        // When clicked, call the onAddToCart callback with the product ID.
+                        // The parent decides what to do (e.g., show an alert, update cart state).
                                 onClick={() => onAddToCart?.(product.id)}
                         >Add to cart</button>
                     </div>

@@ -1,11 +1,18 @@
 
 /**
- * ProductDisplay Component Tests
- * ------------------------------
- * These tests verify that ProductDisplay:
- * - Renders product information
- * - Shows optional description and stock status
- * - Calls onAddToCart with the correct product ID
+ * ProductDisplay stock status test
+ * --------------------------------
+ * This test verifies that the ProductDisplay component:
+ * - Receives a product with `inStock: true`
+ * - Has `showStockStatus` enabled
+ * - Correctly renders the "In Stock" label in the UI
+ *
+ * Connection to the component:
+ * - The component uses the `showStockStatus` prop to decide whether
+ *   to show stock information.
+ * - When `showStockStatus` is true and `product.inStock` is true,
+ *   it renders a <p> element with the text "In Stock".
+ * - This test ensures that behavior is stable and predictable.
  */
 import { render, screen, fireEvent } from "@testing-library/react";
 import { ProductDisplay } from "./ProductDisplay";
