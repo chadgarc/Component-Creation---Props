@@ -3,8 +3,23 @@ import './App.css'
 import { UserProfileCard } from './components/UserProfileCard/UserProfileCard';
 import type { User } from './types';
 import { Modal } from './components/Modal/Modal';
+import { AlertBox } from './components/AlertBox/AlertBox';
+import { ProductDisplay } from './components/ProductDisplay/ProductDisplay';
 
+/**
+ * App Component
+ * --------------
+ * Main application container.
+ *
+ * Responsibilities:
+ * - Holds the list of users in state.
+ * - Tracks which user is currently selected for editing.
+ * - Controls the modal visibility.
+ * - Shows an AlertBox after closing the modal.
+ * - Demonstrates how UserProfileCard, Modal, AlertBox, and ProductDisplay connect.
+ */
 function App() {
+  // List of users displayed in UserProfileCard components.
   const [users] = useState<User[]>([
     {
       id: '1',
@@ -35,24 +50,78 @@ function App() {
     }
   ])
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null)
+  // product object
+  const product = {
+    id: '1',
+    name: 'Wireless Headphones',
+    price: 199.99,
+    description: 'High-quality wireless headphones with noise cancellation.',
+    imageUrl: 'https://example.com/headphones.jpg',
+    inStock: true
+  };
 
+  // Controls whether the modal is open or closed.
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  // Stores the user currently selected for editing in the modal.
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
+  /**
+   * handleEdit
+   * ----------
+   * Called when a UserProfileCard triggers its onEdit callback.
+   *
+   * Flow:
+   * - Receives the userId from the card.
+   * - Finds the matching user in the users array.
+   * - Sets that user as selectedUser.
+   * - Opens the modal by setting isModalOpen to true.
+   *
+   * Connection:
+   * - UserProfileCard -> onEdit(user.id) -> App.handleEdit(userId)
+   * - App then passes selectedUser into the Modal as children.
+   */
   const handleEdit = (userId: string) => {
-    console.log("EDIT CLICKED", userId);
+    // Find the user in the list based on the ID received from the card.
     const user = users.find(user => user.id === userId);
+    // Store the selected user in state so the modal can display their data.
     setSelectedUser(user || null);
+    // Open the modal.
     setIsModalOpen(true);
   }
 
   return (
     <section className='flex flex-col mt-10 gap-5'>
+      {/* Render a UserProfileCard for each user in the list.
+          Each card receives:
+          - user data
+          - showEmail always true
+          - showRole only true for Admin
+          - onEdit callback that points to handleEdit in App.
+          When "Edit Profile" is clicked in a card, it calls onEdit(user.id),
+          which triggers handleEdit and opens the modal with that user's data. */}
       {users.map( user => {
         let showRole = false;
         if(user.role === 'Admin') showRole = true;
-        return <UserProfileCard user={user} showEmail={true} showRole={showRole} onEdit={handleEdit} />
+
+        return <UserProfileCard key={user.id}
+          user={user} // Unique key for React list rendering
+          showEmail={true}
+          showRole={showRole}
+          onEdit={handleEdit} />
       })}
-      <Modal key={selectedUser?.id} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+
+      {/* Modal component:
+          - key={selectedUser?.id} forces React to re-mount the modal when the selected user changes.
+          - isOpen controls whether the modal is visible.
+          - onClose closes the modal and shows an AlertBox.
+          - children render the form fields bound to selectedUser. */}
+      <Modal key={selectedUser?.id}
+            isOpen={isModalOpen}
+            onClose={() => {
+              alert('User updated');
+              // Close the modal
+              setIsModalOpen(false);
+            }}>
         {selectedUser && (
           <>
             <h3>Edit user's name:</h3>
@@ -123,6 +192,21 @@ function App() {
           </>
         )}
       </Modal>
+      <br />
+      {/* Example usage of ProductDisplay to show how it connects:
+          - App passes a product object.
+          - ProductDisplay renders product info.
+          - onAddToCart triggers a callback in App (here, just an alert). */}
+      <div className='mx-auto mb-10'>
+        <ProductDisplay
+          product={product}
+          showDescription={true}
+          showStockStatus={true}
+          onAddToCart={() => {
+            alert("Added product 1 to cart");
+          }}
+        />
+      </div>
     </section>
   )
 }
