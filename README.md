@@ -4,6 +4,8 @@ This project contains a set of reusable React + TypeScript components created fo
 The goal was to practice typed props, optional rendering, callbacks, and component reuse.
 Additionally, a custom **Modal** component was implemented as an extra exercise beyond the lab requirements.
 
+[Check site here](https://chadgarc.github.io/Component-Creation-Props/)
+
 ---
 
 ## 📌 Project Purpose
