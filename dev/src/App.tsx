@@ -4,21 +4,75 @@ import { UserProfileCard } from './components/UserProfileCard/UserProfileCard';
 import type { User } from './types';
 import { Modal } from './components/Modal/Modal';
 import { ProductDisplay } from './components/ProductDisplay/ProductDisplay';
+import { AlertBox } from './components/AlertBox/AlertBox';
 
 /**
  * App Component
  * --------------
- * Main application container.
+ * Main application container responsible for orchestrating the entire UI.
  *
  * Responsibilities:
- * - Holds the list of users in state.
- * - Tracks which user is currently selected for editing.
- * - Controls the modal visibility.
- * - Shows an AlertBox after closing the modal.
- * - Demonstrates how UserProfileCard, Modal, AlertBox, and ProductDisplay connect.
+ * - Stores and manages application state using React's useState hook.
+ * - Renders a list of UserProfileCard components based on the `users` array.
+ * - Handles user selection and editing through the Modal component.
+ * - Demonstrates component composition by connecting UserProfileCard, Modal,
+ *   ProductDisplay, and AlertBox.
+ *
+ * Component Interaction Flow:
+ * 1. UserProfileCard → onEdit(user.id)
+ *    - When the "Edit Profile" button is clicked inside a card,
+ *      the card calls the `onEdit` callback provided by App.
+ *
+ * 2. App.handleEdit(userId)
+ *    - App receives the user ID, finds the matching user,
+ *      stores it in `selectedUser`, and opens the modal.
+ *
+ * 3. Modal receives selectedUser as children
+ *    - The modal displays the editable fields for the selected user.
+ *
+ * 4. Modal.onClose()
+ *    - When the modal closes, App updates state and may trigger alerts.
+ *
+ * 5. ProductDisplay → onAddToCart(product.id)
+ *    - When the "Add to cart" button is clicked, App updates `countProducts`,
+ *      causing a re-render and updating the AlertBox below.
+ *
+ * Importance of useState:
+ * -----------------------
+ * React's `useState` hook is essential because:
+ * - It allows components to store dynamic values.
+ * - When state changes, React automatically re-renders the component.
+ * - This ensures UI stays in sync with the latest data.
+ *
+ * Example:
+ * - `countProducts` updates when a product is added.
+ * - React re-renders App → ProductDisplay → AlertBox.
+ * - The updated cart count appears instantly.
+ *
+ * Importance of Keys in Lists:
+ * ----------------------------
+ * Keys help React identify which items in a list have changed.
+ * Without keys:
+ * - React may re-render incorrectly.
+ * - Components may lose internal state.
+ * - Performance decreases.
+ *
+ * With keys:
+ * - React efficiently updates only the changed items.
+ * - UserProfileCard components remain stable and predictable.
+ *
+ * In this App:
+ * - Each UserProfileCard receives `key={user.id}`.
+ * - This ensures correct rendering when users change or update.
  */
 function App() {
+  
+  // Tracks how many products have been added to the cart.
+  // useState is essential because updating this value triggers a re-render.
+  const [countProducts,setCountProducts] = useState(0);
+
   // List of users displayed in UserProfileCard components.
+  // Stored in state so React can re-render if the list ever changes.
   const [users] = useState<User[]>([
     {
       id: '1',
@@ -49,7 +103,7 @@ function App() {
     }
   ])
 
-  // product object
+  // Product object passed into ProductDisplay.
   const product = {
     id: '1',
     name: 'Wireless Headphones',
@@ -61,6 +115,7 @@ function App() {
 
   // Controls whether the modal is open or closed.
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   // Stores the user currently selected for editing in the modal.
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
@@ -106,7 +161,9 @@ function App() {
           user={user} // Unique key for React list rendering
           showEmail={true}
           showRole={showRole}
-          onEdit={handleEdit} />
+          onEdit={handleEdit}>
+            <h2 className="card-title">{user.name}</h2>
+          </UserProfileCard>
       })}
 
       {/* Modal component:
@@ -192,10 +249,13 @@ function App() {
         )}
       </Modal>
       <br />
-      {/* Example usage of ProductDisplay to show how it connects:
-          - App passes a product object.
-          - ProductDisplay renders product info.
-          - onAddToCart triggers a callback in App (here, just an alert). */}
+      {/*
+        ProductDisplay demonstrates parent → child communication.
+        When "Add to cart" is clicked:
+        - App updates countProducts
+        - React re-renders
+        - AlertBox shows the updated count
+      */}
       <div className='mx-auto mb-10'>
         <ProductDisplay
           product={product}
@@ -203,8 +263,14 @@ function App() {
           showStockStatus={true}
           onAddToCart={() => {
             alert("Added product 1 to cart");
+            setCountProducts(item => item +1);
           }}
-        />
+        >
+          {/* AlertBox shows dynamic cart count */}
+          <AlertBox type='info' message='You have'>
+            <p className='text-sm'>{countProducts} in cart</p>
+          </AlertBox>
+        </ProductDisplay>
       </div>
     </section>
   )

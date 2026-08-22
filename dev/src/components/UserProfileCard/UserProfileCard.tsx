@@ -6,30 +6,77 @@ const DEFAULT_AVATAR = "https://imgs.search.brave.com/JrV-ef8DyMCLDlNVbJ6pdWSeIg
 /**
  * UserProfileCard Component
  * -------------------------
- * Displays a visual card containing user information.
+ * Renders a user profile card with avatar, name, optional email,
+ * optional role, and an "Edit Profile" action button.
  *
  * Props:
- * @param {User} user - The user object containing profile information.
- * @param {boolean} [showEmail=false] - Whether to display the user's email.
- * @param {boolean} [showRole=false] - Whether to display the user's role.
- * @param {(userId: string) => void} [onEdit] - Optional callback triggered when "Edit Profile" is clicked.
- * @param {React.ReactNode} [children] - Optional additional content.
+ * @param {User} user
+ *   The user object containing id, name, email, role, and optional avatarUrl.
+ *
+ * @param {boolean} [showEmail=false]
+ *   When true, displays the user's email inside the card.
+ *
+ * @param {boolean} [showRole=false]
+ *   When true, displays the user's role (Admin, User, Guest).
+ *
+ * @param {(userId: string) => void} [onEdit]
+ *   Callback fired when the "Edit Profile" button is clicked.
+ *   The component passes `user.id` to the parent so the parent
+ *   can open a modal, load user data, or perform other actions.
+ *
+ * @param {React.ReactNode} [children]
+ *   Optional additional content rendered above the email/role section.
+ *   Useful for:
+ *   - Adding custom labels
+ *   - Adding badges
+ *   - Adding extra UI elements per user
  *
  * Component Interaction:
- * - When the "Edit Profile" button is clicked, the component calls:
- *   `onEdit(user.id)`
- * - This sends the user ID back to the parent (`App`), which then opens the modal
- *   and displays the selected user's information.
+ * ----------------------
+ * - This component does NOT manage modal state.
+ * - It simply notifies the parent when the user wants to edit their profile.
  *
- * Important:
- * This component does NOT open the modal itself.
- * It simply notifies the parent component by calling `onEdit`.
+ * Example Flow:
+ * 1. User clicks "Edit Profile".
+ * 2. UserProfileCard calls: onEdit(user.id)
+ * 3. Parent component (App) receives the ID.
+ * 4. App finds the user, stores it in state, and opens the modal.
+ *
+ * Why children matter:
+ * --------------------
+ * Children allow the parent to inject custom UI into the card
+ * without modifying the component itself. This keeps the component
+ * flexible and reusable.
+ *
+ * Why keys matter (when rendering multiple cards):
+ * ------------------------------------------------
+ * When UserProfileCard is used inside a `.map()`:
+ *   <UserProfileCard key={user.id} ... />
+ *
+ * Keys help React:
+ * - Track each card individually
+ * - Prevent incorrect re-renders
+ * - Maintain internal component stability
+ *
+ * Why useState matters (in the parent):
+ * -------------------------------------
+ * The parent uses `useState` to store:
+ * - The selected user
+ * - Whether the modal is open
+ *
+ * When state changes:
+ * - React re-renders the parent
+ * - The updated props flow down into UserProfileCard and Modal
+ *
+ * This is the core of React’s one-way data flow.
  */
+
 export const UserProfileCard: React.FC<UserProfileCardProps> = ({
     user,
     showEmail = false,
     showRole = false,
-    onEdit
+    onEdit,
+    children
     }) => {
 
     return(
@@ -41,7 +88,7 @@ export const UserProfileCard: React.FC<UserProfileCardProps> = ({
                     </div>
                 </div>
                 <div className="card-body items-center text-center">
-                    <h2 className="card-title">{user.name}</h2>
+                    {children}
                     {showEmail && <p>{user.email}</p>}
                     {showRole && <p>{user.role}</p>}
                 </div>

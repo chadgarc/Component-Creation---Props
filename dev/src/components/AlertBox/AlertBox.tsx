@@ -2,6 +2,22 @@
 import React from 'react';
 import type { AlertBoxProps } from '../../types';
 
+/**
+ * AlertBox Component
+ * ------------------
+ * Displays an alert message with optional close button and children content.
+ *
+ * Props:
+ * @param {"success"|"error"|"warning"|"info"} type - Determines the alert style.
+ * @param {string} message - Main alert message.
+ * @param {() => void} [onClose] - Optional callback fired when the close button is clicked.
+ * @param {React.ReactNode} [children] - Optional additional content displayed below the message.
+ *
+ * Component Interaction:
+ * - Parent components control when the alert is shown.
+ * - When the close button is clicked, `onClose` notifies the parent to hide the alert.
+ */
+
 export const AlertBox: React.FC<AlertBoxProps> = ({
     type,
     message,
