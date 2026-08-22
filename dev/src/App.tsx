@@ -5,27 +5,33 @@ import type { User } from './types';
 import { Modal } from './components/Modal/Modal';
 
 function App() {
-  const [users, setUsers] = useState<User[]>([
+  const [users] = useState<User[]>([
     {
       id: '1',
       name: 'Chris',
-      email: 'chris@email.com',
+      email: 'chris@test.com',
       role: 'Admin',
       avatarUrl: "https://imgs.search.brave.com/XVsGwyF5ZSqjDhzb30HnmVuXb7TScDmItBgyyK1Sroc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMud2lraWEubm9j/b29raWUubmV0L2Zp/bmFsZmFudGFzeS9p/bWFnZXMvMy8zMi9D/bG91ZF9Qb3J0cmFp/dC5qcGcvcmV2aXNp/b24vbGF0ZXN0L3Nj/YWxlLXRvLXdpZHRo/LWRvd24vMTI5P2Ni/PTIwMDgwOTI2MjE0/MDA0"
     },
     {
       id: '2',
       name: 'Jess',
-      email: 'jess@email.com',
+      email: 'jess@test.com',
       role: 'User',
       avatarUrl: 'https://imgs.search.brave.com/to19tdEQwOZMKjwuzKs7Uc0wEFb2D-QAVwvdkZTidy0/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc3RlYW11c2Vy/Y29udGVudC5jb20v/dWdjLzE4MTc3Njc4/MzE4NDQ3NDgwODcv/RTA4N0UzQkEyMUNF/MjE4QUQ4NzdFRDIz/RDcxMTk2QjI2RTY2/NUUxNi8_aW13PTI2/OCZpbWg9MjY4Jmlt/YT1maXQmaW1wb2xp/Y3k9TGV0dGVyYm94/JmltY29sb3I9IzAw/MDAwMCZsZXR0ZXJi/b3g9dHJ1ZQ'
     },
     {
       id: '3',
       name: 'Ivan',
-      email: 'ivan@email.com',
+      email: 'ivan@test.com',
       role: 'User',
       avatarUrl: 'https://imgs.search.brave.com/IVodqUmYCLG_8iea-C-fKqXeuOUDuP-WLM9eiw_CGkE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9hdmF0/YXJmaWxlcy5hbHBo/YWNvZGVycy5jb20v/Mzc3L3RodW1iLTM1/MC0zNzc2OTYud2Vi/cA'
+    },
+    {
+      id: '4',
+      name: 'Sebas',
+      email: 'sebas@test.com',
+      role: 'Guest'
     }
   ])
 
