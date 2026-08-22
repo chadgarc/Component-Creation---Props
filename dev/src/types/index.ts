@@ -40,3 +40,9 @@ export interface ProductDisplayProps {
     onAddToCart?: (productId: string) => void;
     children?: React.ReactNode;
 }
+
+export interface ModalProps{
+    isOpen: boolean,
+    onClose: () => void,
+    children: React.ReactNode
+}
